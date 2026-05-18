@@ -1,3 +1,5 @@
+"""Pydantic schemas describing individual laps."""
+
 from backend.app.schemas.base import PydanticSchema
 
 

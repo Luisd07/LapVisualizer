@@ -1,3 +1,7 @@
+"""Pydantic schemas describing race-car drivers."""
+
+from pydantic import Field
+
 from backend.app.schemas.base import PydanticSchema
 from backend.app.schemas.laps import LapSchema
 
@@ -28,4 +32,4 @@ class DriverDetail(PydanticSchema):
     best_lap_time: float | None = None
     best_lap_number: int | None = None
     avg_lap_time: float | None = None
-    laps: list[LapSchema] = []
+    laps: list[LapSchema] = Field(default_factory=list)

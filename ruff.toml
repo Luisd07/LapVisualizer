@@ -1,0 +1,70 @@
+# Ruff configuration for LapVisualizer.
+# Docs: https://docs.astral.sh/ruff/settings/
+
+target-version = "py314"
+line-length = 100
+src = ["."]
+
+[lint]
+# Enable every lint rule, then deliberately carve out only the rules that
+# genuinely conflict with each other or with the formatter. This keeps the
+# project strict by default: new rule categories are opted in automatically.
+select = ["ALL"]
+ignore = [
+    # --- Conflicts with `ruff format` (Ruff's own recommendation) ---
+    "COM812", # missing trailing comma — handled by the formatter
+    "ISC001", # implicit string concat on one line — handled by the formatter
+
+    # --- Mutually exclusive docstring rules (must pick one of each pair) ---
+    "D203", # one blank line before class docstring — conflicts with D211
+    "D213", # multi-line summary on second line — conflicts with D212
+
+    # --- Intentional project-wide relaxations ---
+    "TD002",  # missing author in TODO
+    "TD003",  # missing issue link for TODO
+    "FIX002", # line contains a TODO
+]
+
+[lint.per-file-ignores]
+"**/__init__.py" = [
+    "D104", # missing docstring in public package
+    "F401", # re-exported imports look "unused"
+]
+"tests/**" = [
+    "S101",    # `assert` is expected in tests
+    "D",       # docstrings not required in tests
+    "ANN",     # annotations not required in tests
+    "PLR2004", # magic values are fine in test assertions
+    "INP001",  # tests dir is not an importable package
+]
+
+[lint.flake8-bugbear]
+# FastAPI deliberately uses callables in argument defaults (Depends, Query, ...).
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+    "fastapi.Header",
+    "fastapi.Cookie",
+    "fastapi.Form",
+    "fastapi.File",
+    "fastapi.Security",
+]
+
+[lint.flake8-type-checking]
+# Pydantic and SQLAlchemy resolve annotations at runtime, so imports used only
+# in model fields must stay out of `if TYPE_CHECKING:` blocks.
+runtime-evaluated-base-classes = [
+    "pydantic.BaseModel",
+    "backend.app.schemas.base.PydanticSchema",
+]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.isort]
+known-first-party = ["backend"]
+
+[format]
+docstring-code-format = true

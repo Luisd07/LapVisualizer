@@ -1,4 +1,9 @@
+"""Pydantic schemas describing practice and race sessions."""
+
 from datetime import datetime
+
+from pydantic import Field
+
 from backend.app.schemas.base import PydanticSchema
 from backend.app.schemas.driver import DriverSummary
 
@@ -34,4 +39,4 @@ class SessionDetail(PydanticSchema):
     track_length: float | None = None
     total_laps: int
     uploaded_at: datetime
-    drivers: list[DriverSummary] = []
+    drivers: list[DriverSummary] = Field(default_factory=list)

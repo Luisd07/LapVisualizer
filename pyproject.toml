@@ -1,11 +1,17 @@
 [project]
 name = "lapvisualizer"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Backend API for visualizing and analyzing racing lap and session data."
+readme = "readme.md"
 requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.135.3",
+    "pydantic>=2.13.1",
     "sqlalchemy>=2.0.49",
     "uvicorn>=0.44.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.13",
 ]
