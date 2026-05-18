@@ -9,8 +9,13 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 COPY backend/ backend/
+COPY alembic/ alembic/
+COPY alembic.ini ./
 
-# This tells Python to look in /app for modules
-ENV PYTHONPATH=/app
+# Run from the virtualenv built by `uv sync` (no runtime re-sync, no dev deps);
+# /app is the importable package root.
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH=/app
 
-CMD ["uv", "run", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Apply database migrations, then start the API server.
+CMD ["sh", "-c", "alembic upgrade head && uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"]

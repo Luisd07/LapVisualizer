@@ -5,6 +5,10 @@ target-version = "py314"
 line-length = 100
 src = ["."]
 
+# Alembic owns its own file style: env.py and the generated migration scripts
+# follow Alembic's templates, not this project's lint rules.
+extend-exclude = ["alembic"]
+
 [lint]
 # Enable every lint rule, then deliberately carve out only the rules that
 # genuinely conflict with each other or with the formatter. This keeps the
@@ -47,6 +51,7 @@ ignore = [
     "ANN",     # annotations not required in tests
     "PLR2004", # magic values are fine in test assertions
     "INP001",  # tests dir is not an importable package
+    "E402",    # conftest sets env vars before importing app modules
 ]
 
 [lint.flake8-bugbear]

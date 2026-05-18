@@ -11,8 +11,11 @@ The protocol reference lives in [`docs/`](./docs); a real sample log is in
 
 - **Python** 3.14
 - **FastAPI** — HTTP API
-- **SQLAlchemy** — persistence
+- **PostgreSQL** — database (via `psycopg` 3)
+- **SQLAlchemy** — ORM
+- **Alembic** — database migrations
 - **Pydantic** — request/response schemas
+- **Loguru** — application logging
 - **uv** — dependency and environment management
 - **Ruff** — linting and formatting
 
@@ -24,16 +27,47 @@ Install [uv](https://docs.astral.sh/uv/), then sync the environment:
 uv sync
 ```
 
-Run the development server:
+Create your local config from the template. `.env` is git-ignored and is the
+**only** place credentials live — the app refuses to start without it:
 
 ```sh
+cp .env.example .env
+```
+
+The app needs a PostgreSQL database. The simplest option is the bundled
+container — it reads the same `.env`:
+
+```sh
+docker compose up -d db
+```
+
+Apply migrations, then run the development server:
+
+```sh
+uv run alembic upgrade head
 uv run uvicorn backend.app.main:app --reload
 ```
 
 The API is then available at http://127.0.0.1:8000 (interactive docs at `/docs`).
 
-Configuration is read from the environment / a `.env` file — copy
-[`.env.example`](./.env.example) to `.env` to override defaults.
+All configuration — database credentials (`POSTGRES_USER` / `POSTGRES_PASSWORD`
+/ `POSTGRES_DB`), `CORS_ORIGINS`, `MAX_UPLOAD_MB` — is read from environment
+variables / `.env`. See [`.env.example`](./.env.example) for the full list.
+
+## Database migrations
+
+The schema is owned by [Alembic](https://alembic.sqlalchemy.org/); the app does
+**not** create tables on startup.
+
+```sh
+uv run alembic upgrade head                       # apply all migrations
+uv run alembic revision --autogenerate -m "..."   # generate one after a model change
+uv run alembic downgrade -1                       # roll back the last migration
+```
+
+After editing an ORM model, autogenerate a migration and review it before
+committing. `uv run alembic check` reports whether the models and the latest
+migration are in sync.
 
 ## API
 
@@ -72,8 +106,13 @@ Ruff is configured in [`ruff.toml`](./ruff.toml) with the full rule set enabled.
 
 ## Docker
 
+Bring up the database and the API together:
+
 ```sh
 docker compose up --build
 ```
+
+The `server` container waits for PostgreSQL to be healthy, runs
+`alembic upgrade head`, and then starts the API on port 8000.
 
 See [README.Docker.md](./README.Docker.md) for details.
