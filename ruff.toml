@@ -19,6 +19,17 @@ ignore = [
     "D203", # one blank line before class docstring — conflicts with D211
     "D213", # multi-line summary on second line — conflicts with D212
 
+    # --- Import-placement rules ---
+    # These require imports used only in annotations to move into an
+    # `if TYPE_CHECKING:` block, which only behaves safely with
+    # `from __future__ import annotations` in every module. For an
+    # application (not a library) the import-time saving is negligible and
+    # not worth that churn; runtime-critical cases (ORM/Pydantic fields) are
+    # already correct because those annotations are genuinely used at import.
+    "TC001", # move first-party import into a type-checking block
+    "TC002", # move third-party import into a type-checking block
+    "TC003", # move standard-library import into a type-checking block
+
     # --- Intentional project-wide relaxations ---
     "TD002",  # missing author in TODO
     "TD003",  # missing issue link for TODO
@@ -50,14 +61,6 @@ extend-immutable-calls = [
     "fastapi.Form",
     "fastapi.File",
     "fastapi.Security",
-]
-
-[lint.flake8-type-checking]
-# Pydantic and SQLAlchemy resolve annotations at runtime, so imports used only
-# in model fields must stay out of `if TYPE_CHECKING:` blocks.
-runtime-evaluated-base-classes = [
-    "pydantic.BaseModel",
-    "backend.app.schemas.base.PydanticSchema",
 ]
 
 [lint.pydocstyle]
