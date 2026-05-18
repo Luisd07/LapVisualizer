@@ -61,4 +61,6 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
 
-settings = Settings()
+# Field values are loaded from the environment / `.env` at runtime, so this
+# no-argument call is intentional despite the required-looking fields.
+settings = Settings()  # pyright: ignore[reportCallIssue]
