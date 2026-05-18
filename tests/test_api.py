@@ -4,7 +4,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from backend.app.core.config import settings
-from tests.data import SAMPLE_LOG
+from tests.data import RACE_LOG, SAMPLE_LOG
 
 
 def _upload(client: TestClient):
@@ -95,13 +95,28 @@ def test_missing_session_returns_404(client: TestClient):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_leaderboard_orders_by_best_lap(client: TestClient):
+def test_leaderboard_orders_practice_by_best_lap(client: TestClient):
     session_id = _upload(client).json()["session_id"]
     board = client.get(f"/api/sessions/{session_id}/leaderboard").json()
-    assert [row["reg_number"] for row in board] == ["11", "22", "33"]
-    assert board[0]["position"] == 1
-    assert board[0]["gap_to_leader"] == 0.0
-    assert board[1]["gap_to_leader"] == 2.0
+    assert board["session_type"] == "practice"
+    entries = board["entries"]
+    assert [row["reg_number"] for row in entries] == ["11", "22", "33"]
+    assert entries[0]["position"] == 1
+    assert entries[0]["gap_to_leader"] == 0.0
+    assert entries[1]["gap_to_leader"] == 2.0
+
+
+def test_leaderboard_orders_race_by_finishing_position(client: TestClient):
+    session_id = client.post(
+        "/api/sessions/upload",
+        files={"file": ("race.rmon.log", RACE_LOG, "text/plain")},
+    ).json()["session_id"]
+    board = client.get(f"/api/sessions/{session_id}/leaderboard").json()
+    assert board["session_type"] == "race"
+    entries = board["entries"]
+    assert [row["reg_number"] for row in entries] == ["11", "22", "33"]
+    assert entries[2]["laps_down"] == 1
+    assert entries[2]["gap_to_leader"] is None
 
 
 def test_leaderboard_filters_by_class(client: TestClient):
@@ -110,7 +125,7 @@ def test_leaderboard_filters_by_class(client: TestClient):
         f"/api/sessions/{session_id}/leaderboard",
         params={"race_class": "Class B"},
     ).json()
-    assert [row["reg_number"] for row in board] == ["33"]
+    assert [row["reg_number"] for row in board["entries"]] == ["33"]
 
 
 def test_stats_flags_outlier_lap(client: TestClient):

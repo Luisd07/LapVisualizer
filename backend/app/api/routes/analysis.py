@@ -7,7 +7,7 @@ from backend.app.schemas.analysis import (
     ComparisonResult,
     DriverProgression,
     DriverStats,
-    LeaderboardEntry,
+    Leaderboard,
 )
 from backend.app.services import analysis
 
@@ -24,13 +24,17 @@ def _split_regs(value: str | None) -> list[str] | None:
     return regs or None
 
 
-@router.get("/{session_id}/leaderboard", response_model=list[LeaderboardEntry])
+@router.get("/{session_id}/leaderboard", response_model=Leaderboard)
 def leaderboard(
     session_id: str,
     db: DbSession,
     race_class: str | None = None,
-) -> list[LeaderboardEntry]:
-    """Rank drivers by their fastest lap, optionally filtered to one class."""
+) -> Leaderboard:
+    """Return the session's official classification, optionally filtered to one class.
+
+    Race sessions are ordered by finishing position, practice and qualifying
+    sessions by best lap — see `analysis.build_leaderboard`.
+    """
     session = get_session_or_404(db, session_id)
     return analysis.build_leaderboard(session, race_class=race_class)
 

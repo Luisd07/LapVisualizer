@@ -1,111 +1,1109 @@
+/* ==============================================================
+   LapVisualizer — "KartChaser" broadcast timing-screen design.
+
+   Aesthetic: a motorsport TV graphics package. True-black asphalt,
+   electric KartChaser blue, condensed broadcast type, checkered-flag
+   marks and angled "speed cut" edges. Lap times follow real timing
+   conventions — purple = session-best, green = personal best.
+
+   Retheme the whole app by editing the tokens in :root below.
+   ============================================================== */
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* ---- surfaces: asphalt, darkest → lightest -------------------- */
+  --track: #07090d; /* page background */
+  --carbon: #0c0f15; /* elevated bg (header, tooltips) */
+  --panel: #11151c; /* card / table surface */
+  --panel-2: #171c25; /* nested surface, inputs */
+  --panel-3: #20262f; /* hover surface */
+  --border: #232934;
+  --border-strong: #353d4b;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* ---- text: chalk on a pit board ------------------------------- */
+  --chalk: #eef1f6;
+  --chalk-dim: #98a2b3;
+  --chalk-faint: #5b6573;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* ---- KartChaser electric blue --------------------------------- */
+  --blue: #2f6dff;
+  --blue-bright: #5b8cff;
+  --blue-deep: #1b3fae;
+  --blue-ink: #061027; /* text on a blue fill */
+  --blue-soft: rgba(47, 109, 255, 0.13);
+  --blue-line: rgba(47, 109, 255, 0.45);
+  --blue-glow: rgba(47, 109, 255, 0.55);
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* ---- motorsport timing conventions ---------------------------- */
+  --purple: #b98bff; /* overall session-best lap */
+  --green: #3ee089; /* personal best */
+  --amber: #ffb23e; /* caution / outlier */
+  --red: #ff5d6c; /* slow lap / error */
+
+  /* ---- type ----------------------------------------------------- */
+  --f-display: "Saira Condensed", "Arial Narrow", sans-serif;
+  --f-sans: "Saira", system-ui, -apple-system, sans-serif;
+  --f-mono: "Spline Sans Mono", ui-monospace, "Cascadia Code", monospace;
+
+  /* ---- shape: sharp + technical --------------------------------- */
+  --r: 4px;
+  --r-sm: 3px;
+  --cut: 9px; /* the signature angled "speed cut" */
+  --shadow: 0 20px 44px -16px rgba(0, 0, 0, 0.75);
+  --grid-line: rgba(255, 255, 255, 0.022);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+/* ---- reset + base --------------------------------------------- */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
-
+* {
+  margin: 0;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
 body {
-  margin: 0;
+  background:
+    radial-gradient(900px 520px at 82% -12%, rgba(47, 109, 255, 0.11), transparent 72%),
+    radial-gradient(700px 460px at 8% 0%, rgba(47, 109, 255, 0.05), transparent 70%),
+    var(--track);
+  color: var(--chalk);
+  font-family: var(--f-sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
+/* faint asphalt grid + broadcast grain, masked toward the top */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000, transparent 78%);
+}
+body::after {
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+h2,
+h3 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: 31px;
+  letter-spacing: 0.015em;
 }
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
+h3 {
   font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  letter-spacing: 0.07em;
+  color: var(--chalk-dim);
+}
+code {
+  font-family: var(--f-mono);
+  font-size: 0.86em;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  color: var(--blue-bright);
+}
+:focus-visible {
+  outline: 2px solid var(--blue-line);
+  outline-offset: 2px;
+}
+
+/* slim instrument-panel scrollbars */
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3px solid var(--track);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--blue-deep);
+}
+
+/* ---- app shell ------------------------------------------------ */
+.app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 26px;
+  background: rgba(9, 11, 16, 0.82);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+/* a thin start/finish line glowing under the header */
+.app-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--blue) 0%, transparent 38%);
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+/* a skewed checkered-flag tile — the brand mark */
+.wordmark-mark {
+  width: 24px;
+  height: 17px;
+  flex-shrink: 0;
+  background:
+    repeating-conic-gradient(var(--chalk) 0% 25%, #0a0c11 0% 50%) 0 0 / 8.5px 8.5px;
+  transform: skewX(-13deg);
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    6px 0 16px -2px var(--blue-glow);
+}
+
+.app-nav {
+  display: flex;
+  gap: 4px;
+}
+.app-nav a {
+  position: relative;
+  padding: 8px 14px;
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  border-radius: var(--r-sm);
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.app-nav a:hover {
+  color: var(--chalk);
+  background: var(--panel-2);
+}
+.app-nav a.active {
+  color: var(--blue-bright);
+  background: var(--blue-soft);
+}
+.app-nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--blue);
+  box-shadow: 0 0 10px var(--blue-glow);
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 38px 26px 80px;
+}
+
+/* ---- page header ---------------------------------------------- */
+.page-header {
+  position: relative;
+  margin-bottom: 26px;
+  padding-left: 18px;
+  animation: kc-rise 0.5s both;
+}
+/* skewed blue "marker" bar — the speed-tick motif */
+.page-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 5px;
+  width: 5px;
+  background: linear-gradient(var(--blue-bright), var(--blue-deep));
+  transform: skewX(-11deg);
+  box-shadow: 0 0 14px -2px var(--blue-glow);
+}
+.page-header h2 {
+  margin-bottom: 5px;
+}
+.page-header p {
+  color: var(--chalk-dim);
+  font-size: 13.5px;
+}
+
+/* ---- card ----------------------------------------------------- */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* ---- buttons -------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--panel-2);
+  color: var(--chalk);
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s,
+    filter 0.15s;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--blue-line);
+  color: var(--blue-bright);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* the primary CTA: a filled blue chip with angled speed cuts */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(170deg, var(--blue-bright), var(--blue));
+  border: none;
+  color: var(--blue-ink);
+  font-weight: 700;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+/* a light sheen that sweeps across on hover */
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 62%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.6s ease;
+}
+.btn-primary:hover:not(:disabled) {
+  filter: drop-shadow(0 0 16px var(--blue-glow)) brightness(1.06);
+}
+.btn-primary:hover:not(:disabled)::after {
+  transform: translateX(130%);
+}
+
+/* a quiet text button (e.g. delete) */
+.btn-ghost {
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--chalk-faint);
+  font-family: var(--f-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--red);
+  background: rgba(255, 93, 108, 0.1);
+}
+
+/* ---- badge / chip --------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+}
+.badge strong {
+  color: var(--blue-bright);
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+/* an emphasised badge — e.g. the session type */
+.badge-accent {
+  background: var(--blue-soft);
+  border-color: var(--blue-line);
+  color: var(--blue-bright);
+  font-weight: 600;
+}
+
+/* ---- data table ----------------------------------------------- */
+.table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: auto;
+  background: var(--panel);
+  animation: kc-rise 0.45s both;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--carbon);
+  text-align: left;
+  padding: 11px 16px;
+  font-family: var(--f-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--chalk-faint);
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.data-table tbody tr {
+  transition: background 0.12s;
+}
+.data-table tbody tr:hover {
+  background: var(--panel-2);
+}
+.data-table .num {
+  font-family: var(--f-mono);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.data-table .accent {
+  color: var(--blue-bright);
+  font-weight: 600;
+}
+
+/* timing-tower variant — the broadcast leaderboard */
+.table-timing tbody td:first-child {
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--chalk);
+}
+/* podium: glowing position edge for P1–P3 */
+.table-timing tbody tr:nth-child(1) td:first-child {
+  box-shadow: inset 3px 0 var(--blue);
+  color: var(--blue-bright);
+}
+.table-timing tbody tr:nth-child(2) td:first-child {
+  box-shadow: inset 3px 0 var(--chalk-dim);
+}
+.table-timing tbody tr:nth-child(3) td:first-child {
+  box-shadow: inset 3px 0 var(--amber);
+}
+/* `table-best` rows are ranked by best lap, so the leader holds the
+   overall session-best lap — flag it purple, per timing-screen convention. */
+.table-best tbody tr:nth-child(1) .accent {
+  color: var(--purple);
+}
+.table-timing tbody tr:nth-child(1):hover {
+  background: var(--blue-soft);
+}
+
+/* ---- form controls -------------------------------------------- */
+input[type="file"] {
+  display: none;
+}
+.file-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 30px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--r);
+  background-color: var(--panel-2);
+  background-image: repeating-conic-gradient(
+    rgba(255, 255, 255, 0.018) 0% 25%,
+    transparent 0% 50%
+  );
+  background-size: 22px 22px;
+  color: var(--chalk-dim);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    background-color 0.18s;
+}
+.file-pick:hover {
+  border-color: var(--blue-line);
+  background-color: var(--panel-3);
+}
+.file-pick strong {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--chalk);
+}
+.file-name {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--blue-bright);
+  word-break: break-all;
+}
+
+select {
+  padding: 9px 36px 9px 13px;
+  background-color: var(--panel-2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='none' stroke='%235b8cff' stroke-width='2' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  color: var(--chalk);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  font: inherit;
+  font-size: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+select:hover {
+  border-color: var(--blue-line);
+}
+
+/* ---- loading / error / empty states --------------------------- */
+.state {
+  padding: 60px 24px;
+  text-align: center;
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+}
+.state-error {
+  color: var(--red);
+}
+
+/* ---- upload page ---------------------------------------------- */
+.upload {
+  max-width: 500px;
+  margin: 56px auto 0;
+  animation: kc-rise 0.55s both;
+}
+.upload .card {
+  position: relative;
+  overflow: hidden;
+}
+/* a checkered flag corner — the "grid" you start from */
+.upload .card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 88px;
+  height: 88px;
+  background: repeating-conic-gradient(
+      rgba(255, 255, 255, 0.04) 0% 25%,
+      transparent 0% 50%
+    )
+    0 0 / 14px 14px;
+  -webkit-mask-image: linear-gradient(225deg, #000, transparent 70%);
+  mask-image: linear-gradient(225deg, #000, transparent 70%);
+}
+/* a blue accent line across the card top */
+.upload .card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), transparent 75%);
+}
+.upload h2 {
+  margin-bottom: 7px;
+}
+.upload .sub {
+  color: var(--chalk-dim);
+  font-size: 13.5px;
+  margin-bottom: 22px;
+}
+.upload-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+.upload-actions .btn-primary {
+  align-self: flex-start;
+}
+
+/* ---- sessions page -------------------------------------------- */
+.session-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+.session-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  animation: kc-rise 0.5s both;
+  transition:
+    border-color 0.16s,
+    transform 0.16s,
+    box-shadow 0.16s;
+}
+/* a blue speed bar down the leading edge */
+.session-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--blue-deep);
+  transition: background 0.16s;
+}
+.session-card:hover {
+  border-color: var(--blue-line);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.session-card:hover::before {
+  background: var(--blue);
+  box-shadow: 0 0 14px var(--blue-glow);
+}
+.session-card-name {
+  font-family: var(--f-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  transition: color 0.16s;
+}
+.session-card:hover .session-card-name {
+  color: var(--blue-bright);
+}
+.session-card-track {
+  font-size: 13px;
+  color: var(--chalk-dim);
+}
+.session-card-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.session-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  color: var(--chalk-faint);
+}
+
+/* ---- session dashboard ---------------------------------------- */
+.back-link {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-family: var(--f-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  transition:
+    color 0.15s,
+    transform 0.15s;
+}
+.back-link:hover {
+  color: var(--blue-bright);
+  transform: translateX(-3px);
+}
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* tab bar — broadcast channel selector */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 10px 20px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--chalk-dim);
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+.tab:hover {
+  color: var(--chalk);
+  border-color: var(--border-strong);
+}
+.tab.active {
+  background: linear-gradient(170deg, var(--blue-bright), var(--blue));
+  border-color: transparent;
+  color: var(--blue-ink);
+  font-weight: 700;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%
+  );
+  filter: drop-shadow(0 5px 14px var(--blue-glow));
+}
+.tab-panel {
+  min-height: 240px;
+}
+
+/* chart panel */
+.chart-panel {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+/* a labelled heading inside a chart panel, with a blue speed-tick */
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+.panel-title::before {
+  content: "";
+  width: 3px;
+  height: 13px;
+  background: var(--blue);
+  transform: skewX(-11deg);
+}
+
+/* ---- lap-times tab: pit-wall driver list + chart -------------- */
+.laptimes {
+  display: grid;
+  grid-template-columns: 252px 1fr;
+  gap: 16px;
+  animation: kc-rise 0.45s both;
+}
+.driver-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 466px;
+  overflow-y: auto;
+  padding: 7px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.driver-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 9px;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--chalk-dim);
+  font-size: 13px;
+  text-align: left;
+  transition:
+    background 0.12s,
+    color 0.12s,
+    border-color 0.12s;
+}
+.driver-row:hover {
+  background: var(--panel-2);
+  color: var(--chalk);
+}
+.driver-row.on {
+  color: var(--chalk);
+  background: var(--blue-soft);
+  border-left-color: var(--blue);
+}
+.driver-row-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.driver-row-time {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--chalk-faint);
+}
+.driver-row.on .driver-row-time {
+  color: var(--blue-bright);
+}
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 1px;
+  flex-shrink: 0;
+  transform: skewX(-12deg);
+}
+
+/* ---- driver tab ----------------------------------------------- */
+.driver-view {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: kc-rise 0.45s both;
+}
+.driver-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.driver-toolbar select {
+  max-width: 320px;
+}
+.field-label {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--chalk-faint);
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+  gap: 12px;
+}
+.stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  animation: kc-rise 0.5s both;
+}
+/* skewed blue speed-tick in the corner */
+.stat::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 22px;
+  height: 4px;
+  background: var(--blue-deep);
+  transform: skewX(-45deg);
+}
+.stat-label {
+  font-family: var(--f-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--chalk-faint);
+}
+.stat-value {
+  font-family: var(--f-display);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-value.accent {
+  color: var(--blue-bright);
+}
+/* the headline stat (best lap) gets a brighter tick */
+.stat:has(.accent)::before {
+  background: var(--blue);
+  box-shadow: 0 0 12px var(--blue-glow);
+}
+
+/* running-position cell in the driver lap table */
+.pos-cell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pos-delta {
+  font-family: var(--f-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.pos-gain {
+  color: var(--green);
+}
+.pos-loss {
+  color: var(--red);
+}
+
+/* lap tags */
+.tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  font-family: var(--f-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tag-best {
+  background: rgba(62, 224, 137, 0.14);
+  color: var(--green);
+}
+.tag-out {
+  background: rgba(255, 178, 62, 0.14);
+  color: var(--amber);
+}
+
+/* ---- entrance animation + stagger ----------------------------- */
+@keyframes kc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(13px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* session cards sweep in like a starting grid */
+.session-card:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.session-card:nth-child(2) {
+  animation-delay: 0.09s;
+}
+.session-card:nth-child(3) {
+  animation-delay: 0.14s;
+}
+.session-card:nth-child(4) {
+  animation-delay: 0.19s;
+}
+.session-card:nth-child(5) {
+  animation-delay: 0.24s;
+}
+.session-card:nth-child(6) {
+  animation-delay: 0.29s;
+}
+.session-card:nth-child(7) {
+  animation-delay: 0.34s;
+}
+.session-card:nth-child(8) {
+  animation-delay: 0.39s;
+}
+.session-card:nth-child(9) {
+  animation-delay: 0.44s;
+}
+
+/* stat tiles count up in sequence */
+.stat:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.stat:nth-child(2) {
+  animation-delay: 0.09s;
+}
+.stat:nth-child(3) {
+  animation-delay: 0.14s;
+}
+.stat:nth-child(4) {
+  animation-delay: 0.19s;
+}
+.stat:nth-child(5) {
+  animation-delay: 0.24s;
+}
+.stat:nth-child(6) {
+  animation-delay: 0.29s;
+}
+
+/* the timing tower populates row by row */
+.table-timing tbody tr {
+  animation: kc-rise 0.4s both;
+}
+.table-timing tbody tr:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.table-timing tbody tr:nth-child(2) {
+  animation-delay: 0.09s;
+}
+.table-timing tbody tr:nth-child(3) {
+  animation-delay: 0.13s;
+}
+.table-timing tbody tr:nth-child(4) {
+  animation-delay: 0.17s;
+}
+.table-timing tbody tr:nth-child(5) {
+  animation-delay: 0.21s;
+}
+.table-timing tbody tr:nth-child(6) {
+  animation-delay: 0.25s;
+}
+.table-timing tbody tr:nth-child(7) {
+  animation-delay: 0.29s;
+}
+.table-timing tbody tr:nth-child(8) {
+  animation-delay: 0.33s;
+}
+.table-timing tbody tr:nth-child(9) {
+  animation-delay: 0.37s;
+}
+.table-timing tbody tr:nth-child(10) {
+  animation-delay: 0.41s;
+}
+
+/* ---- responsive ----------------------------------------------- */
+@media (max-width: 760px) {
+  .app-main {
+    padding: 28px 18px 64px;
+  }
+  .app-header {
+    padding: 0 18px;
+  }
+  h2 {
+    font-size: 26px;
+  }
+  .laptimes {
+    grid-template-columns: 1fr;
+  }
+  .driver-list {
+    max-height: 220px;
+  }
+}
+
+/* ---- respect reduced-motion preferences ----------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

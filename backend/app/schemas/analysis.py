@@ -1,22 +1,55 @@
 """Pydantic schemas for the lap-analysis endpoints."""
 
+import enum
+
 from pydantic import Field
 
 from backend.app.schemas.base import PydanticSchema
 
 
+class SessionType(enum.StrEnum):
+    """How a session's leaderboard is ranked.
+
+    A race is ranked by finishing order (the timing system's ``$G``
+    classification); a practice or qualifying session is ranked by best lap
+    (the ``$H`` classification).
+    """
+
+    RACE = "race"
+    PRACTICE = "practice"
+
+
 class LeaderboardEntry(PydanticSchema):
-    """One row of the best-lap leaderboard."""
+    """One row of a session leaderboard.
+
+    The leaderboard mirrors the timing system's own final classification —
+    ``$G`` for a race, ``$H`` for a practice — so `position` is the official
+    standing, not a ranking re-derived from the lap log. Fields that only one
+    session type provides (e.g. `total_time_seconds`) are left unset otherwise.
+    """
 
     position: int
     reg_number: str
     number: str
     driver_name: str
     race_class: str | None = None
-    best_lap_time: float
-    best_lap_number: int
     lap_count: int
-    gap_to_leader: float
+    # Official best lap, from the $H classification record.
+    best_lap_time: float | None = None
+    best_lap_number: int | None = None
+    # Race finish details, from the $G classification record.
+    laps_completed: int | None = None
+    total_time_seconds: float | None = None
+    # Gap to the leader: a time in seconds, or — for a lapped car — `laps_down`.
+    gap_to_leader: float | None = None
+    laps_down: int | None = None
+
+
+class Leaderboard(PydanticSchema):
+    """A session's full classification, ordered best-placed first."""
+
+    session_type: SessionType
+    entries: list[LeaderboardEntry] = Field(default_factory=list)
 
 
 class ProgressionLap(PydanticSchema):
