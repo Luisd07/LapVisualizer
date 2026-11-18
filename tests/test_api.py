@@ -100,6 +100,10 @@ def test_driver_detail_includes_resolved_standings(client: TestClient):
     assert driver["best_lap_position"] == 1
     assert driver["official_best_lap_number"] == 2
     assert driver["official_best_lap_time"] == 44.0
+    # Computed from the stored laps:
+    assert driver["fastest_lap_number"] == 2
+    assert driver["fastest_lap_time"] == 44.0
+    assert "best_lap_time" not in driver
 
 
 def test_delete_session(client: TestClient):
@@ -122,6 +126,9 @@ def test_leaderboard_orders_practice_by_best_lap(client: TestClient):
     assert entries[0]["position"] == 1
     assert entries[0]["gap_to_leader"] == 0.0
     assert entries[1]["gap_to_leader"] == 2.0
+    assert entries[0]["official_best_lap_time"] == 44.0
+    assert entries[0]["official_best_lap_number"] == 2
+    assert "best_lap_time" not in entries[0]
 
 
 def test_leaderboard_orders_race_by_finishing_position(client: TestClient):
@@ -154,6 +161,8 @@ def test_stats_flags_outlier_lap(client: TestClient):
     ).json()
     assert len(stats) == 1
     assert stats[0]["outlier_lap_numbers"] == [4]
+    assert stats[0]["fastest_lap_time"] <= stats[0]["median_lap_time"]
+    assert "best_lap_time" not in stats[0]
 
 
 def test_comparison_aligns_drivers(client: TestClient):
@@ -164,6 +173,7 @@ def test_comparison_aligns_drivers(client: TestClient):
     ).json()
     assert [d["reg_number"] for d in result["drivers"]] == ["11", "22"]
     assert len(result["rows"]) == 5
+    assert result["drivers"][0]["fastest_lap_time"] == 44.0
     assert result["rows"][0]["times"] == {"11": 45.0, "22": 46.5}
 
 

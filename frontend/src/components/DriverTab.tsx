@@ -73,8 +73,8 @@ export function DriverTab({ progression, stats, leaderboard }: DriverTabProps) {
 
       <div className="stat-grid">
         <Stat
-          label="Best lap"
-          value={driver.best_lap_time != null ? formatLapTime(driver.best_lap_time) : '—'}
+          label="Fastest lap"
+          value={driver.fastest_lap_time != null ? formatLapTime(driver.fastest_lap_time) : '—'}
           accent
         />
         <Stat label="Position" value={boardEntry ? `P${boardEntry.position}` : '—'} />

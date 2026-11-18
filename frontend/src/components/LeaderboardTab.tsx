@@ -39,7 +39,7 @@ function RaceResults({ entries }: { entries: LeaderboardEntry[] }) {
             <th>Laps</th>
             <th>Total time</th>
             <th>Gap</th>
-            <th>Best lap</th>
+            <th>Best lap (official)</th>
           </tr>
         </thead>
         <tbody>
@@ -59,7 +59,7 @@ function RaceResults({ entries }: { entries: LeaderboardEntry[] }) {
                 {formatRaceGap(entry.gap_to_leader, entry.laps_down, index === 0)}
               </td>
               <td className="num accent">
-                {entry.best_lap_time != null ? formatLapTime(entry.best_lap_time) : '—'}
+                {entry.official_best_lap_time != null ? formatLapTime(entry.official_best_lap_time) : '—'}
               </td>
             </tr>
           ))}
@@ -82,7 +82,7 @@ function PracticeResults({ entries }: { entries: LeaderboardEntry[] }) {
             <th>#</th>
             <th>Driver</th>
             <th>Class</th>
-            <th>Best lap</th>
+            <th>Best lap (official)</th>
             <th>On lap</th>
             <th>Laps</th>
             <th>Gap</th>
@@ -96,9 +96,9 @@ function PracticeResults({ entries }: { entries: LeaderboardEntry[] }) {
               <td>{entry.driver_name}</td>
               <td>{entry.race_class ?? '—'}</td>
               <td className="num accent">
-                {entry.best_lap_time != null ? formatLapTime(entry.best_lap_time) : '—'}
+                {entry.official_best_lap_time != null ? formatLapTime(entry.official_best_lap_time) : '—'}
               </td>
-              <td className="num">{entry.best_lap_number ?? '—'}</td>
+              <td className="num">{entry.official_best_lap_number ?? '—'}</td>
               <td className="num">{entry.lap_count}</td>
               <td className="num">{formatGap(entry.gap_to_leader ?? 0)}</td>
             </tr>

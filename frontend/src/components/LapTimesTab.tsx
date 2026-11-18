@@ -16,7 +16,7 @@ export function LapTimesTab({ progression }: LapTimesTabProps) {
   // Drivers that actually set laps, fastest best-lap first.
   const drivers = [...progression]
     .filter((d) => d.laps.length > 0)
-    .sort((a, b) => (a.best_lap_time ?? Infinity) - (b.best_lap_time ?? Infinity))
+    .sort((a, b) => (a.fastest_lap_time ?? Infinity) - (b.fastest_lap_time ?? Infinity))
 
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(drivers.slice(0, DEFAULT_COUNT).map((d) => d.reg_number)),
@@ -57,8 +57,8 @@ export function LapTimesTab({ progression }: LapTimesTabProps) {
                 #{driver.number} {driver.driver_name}
               </span>
               <span className="driver-row-time">
-                {driver.best_lap_time != null
-                  ? formatLapTime(driver.best_lap_time)
+                {driver.fastest_lap_time != null
+                  ? formatLapTime(driver.fastest_lap_time)
                   : '—'}
               </span>
             </button>

@@ -17,7 +17,7 @@ class DriverSummary(PydanticSchema):
     team: str | None = None
     chassis: str | None = None
     lap_count: int
-    best_lap_time: float | None = None
+    fastest_lap_time: float | None = None
     finish_position: int | None = None
 
 
@@ -32,8 +32,8 @@ class DriverDetail(PydanticSchema):
     team: str | None = None
     chassis: str | None = None
     lap_count: int
-    best_lap_time: float | None = None
-    best_lap_number: int | None = None
+    fastest_lap_time: float | None = None
+    fastest_lap_number: int | None = None
     avg_lap_time: float | None = None
     # Official standings resolved from the $G/$H timing records.
     finish_position: int | None = None

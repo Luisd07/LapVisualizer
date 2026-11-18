@@ -16,7 +16,7 @@ export type DriverSummary = {
   team: string | null
   chassis: string | null
   lap_count: number
-  best_lap_time: number | null
+  fastest_lap_time: number | null
   finish_position: number | null
 }
 
@@ -79,8 +79,8 @@ export type LeaderboardEntry = {
   driver_name: string
   race_class: string | null
   lap_count: number
-  best_lap_time: number | null
-  best_lap_number: number | null
+  official_best_lap_time: number | null
+  official_best_lap_number: number | null
   laps_completed: number | null
   total_time_seconds: number | null
   gap_to_leader: number | null
@@ -100,7 +100,7 @@ export type DriverStats = {
   driver_name: string
   race_class: string | null
   lap_count: number
-  best_lap_time: number
+  fastest_lap_time: number
   worst_lap_time: number
   mean_lap_time: number
   median_lap_time: number
@@ -123,6 +123,6 @@ export type DriverProgression = {
   number: string
   driver_name: string
   race_class: string | null
-  best_lap_time: number | null
+  fastest_lap_time: number | null
   laps: ProgressionLap[]
 }

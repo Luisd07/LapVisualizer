@@ -15,8 +15,8 @@ from backend.app.schemas.analysis import (
     ProgressionLap,
     SessionType,
 )
+from backend.app.services.laps_util import fastest_lap, round_opt, round_time
 
-_TIME_PRECISION = 3
 _MIN_LAPS_FOR_STDEV = 2
 _MIN_LAPS_FOR_OUTLIERS = 3
 # Sentinel sort key for drivers the timing system left unclassified — it keeps
@@ -40,25 +40,10 @@ def _driver_name(driver: models.Driver) -> str:
     return f"{driver.first_name} {driver.last_name}".strip()
 
 
-def _round(value: float) -> float:
-    """Round a time to the protocol's millisecond precision."""
-    return round(value, _TIME_PRECISION)
-
-
-def _round_opt(value: float | None) -> float | None:
-    """Round an optional time to millisecond precision, preserving ``None``."""
-    return _round(value) if value is not None else None
-
-
-def _best_lap(driver: models.Driver) -> models.Lap | None:
-    """Return the driver's fastest lap, or ``None`` if they ran none."""
-    return min(driver.laps, key=lambda lap: lap.lap_time_seconds, default=None)
-
-
-def _best_time(driver: models.Driver) -> float | None:
+def _fastest_time(driver: models.Driver) -> float | None:
     """Return the driver's fastest lap time in seconds, or ``None``."""
-    best = _best_lap(driver)
-    return _round(best.lap_time_seconds) if best is not None else None
+    fastest = fastest_lap(driver)
+    return round_time(fastest.lap_time_seconds) if fastest is not None else None
 
 
 def _select_drivers(
@@ -133,7 +118,7 @@ def _race_gap(
         return None, laps_down
     if driver.total_time_seconds is None or leader_time is None:
         return 0.0, 0
-    return _round(driver.total_time_seconds - leader_time), 0
+    return round_time(driver.total_time_seconds - leader_time), 0
 
 
 def _race_entries(drivers: list[models.Driver]) -> list[LeaderboardEntry]:
@@ -153,10 +138,10 @@ def _race_entries(drivers: list[models.Driver]) -> list[LeaderboardEntry]:
                 driver_name=_driver_name(driver),
                 race_class=driver.race_class,
                 lap_count=len(driver.laps),
-                best_lap_time=_round_opt(driver.official_best_lap_time),
-                best_lap_number=driver.official_best_lap_number,
+                official_best_lap_time=round_opt(driver.official_best_lap_time),
+                official_best_lap_number=driver.official_best_lap_number,
                 laps_completed=driver.laps_completed,
-                total_time_seconds=_round_opt(driver.total_time_seconds),
+                total_time_seconds=round_opt(driver.total_time_seconds),
                 gap_to_leader=gap,
                 laps_down=laps_down,
             ),
@@ -174,7 +159,7 @@ def _practice_entries(drivers: list[models.Driver]) -> list[LeaderboardEntry]:
     entries: list[LeaderboardEntry] = []
     for fallback_position, driver in enumerate(ordered, start=1):
         best = driver.official_best_lap_time
-        gap = _round(best - leader_time) if best and leader_time else None
+        gap = round_time(best - leader_time) if best and leader_time else None
         entries.append(
             LeaderboardEntry(
                 position=driver.best_lap_position or fallback_position,
@@ -183,8 +168,8 @@ def _practice_entries(drivers: list[models.Driver]) -> list[LeaderboardEntry]:
                 driver_name=_driver_name(driver),
                 race_class=driver.race_class,
                 lap_count=len(driver.laps),
-                best_lap_time=_round_opt(best),
-                best_lap_number=driver.official_best_lap_number,
+                official_best_lap_time=round_opt(best),
+                official_best_lap_number=driver.official_best_lap_number,
                 gap_to_leader=gap,
             ),
         )
@@ -207,14 +192,14 @@ def build_progression(
                 number=driver.car_number,
                 driver_name=_driver_name(driver),
                 race_class=driver.race_class,
-                best_lap_time=_round(best_time) if best_time is not None else None,
+                fastest_lap_time=round_time(best_time) if best_time is not None else None,
                 laps=[
                     ProgressionLap(
                         lap_number=lap.lap_number,
-                        lap_time_seconds=_round(lap.lap_time_seconds),
-                        total_time_seconds=_round(lap.total_time_seconds),
+                        lap_time_seconds=round_time(lap.lap_time_seconds),
+                        total_time_seconds=round_time(lap.total_time_seconds),
                         gap_to_personal_best=(
-                            _round(lap.lap_time_seconds - best_time)
+                            round_time(lap.lap_time_seconds - best_time)
                             if best_time is not None
                             else 0.0
                         ),
@@ -242,12 +227,12 @@ def build_comparison(
             number=driver.car_number,
             driver_name=_driver_name(driver),
             race_class=driver.race_class,
-            best_lap_time=_best_time(driver),
+            fastest_lap_time=_fastest_time(driver),
         )
         for driver in ordered
     ]
     lap_index = {
-        driver.reg_number: {lap.lap_number: _round(lap.lap_time_seconds) for lap in driver.laps}
+        driver.reg_number: {lap.lap_number: round_time(lap.lap_time_seconds) for lap in driver.laps}
         for driver in ordered
     }
     max_laps = max((len(driver.laps) for driver in ordered), default=0)
@@ -292,11 +277,11 @@ def build_stats(
                 driver_name=_driver_name(driver),
                 race_class=driver.race_class,
                 lap_count=len(laps),
-                best_lap_time=_round(min(times)),
-                worst_lap_time=_round(max(times)),
-                mean_lap_time=_round(statistics.fmean(times)),
-                median_lap_time=_round(statistics.median(times)),
-                std_dev_seconds=_round(std_dev),
+                fastest_lap_time=round_time(min(times)),
+                worst_lap_time=round_time(max(times)),
+                mean_lap_time=round_time(statistics.fmean(times)),
+                median_lap_time=round_time(statistics.median(times)),
+                std_dev_seconds=round_time(std_dev),
                 outlier_lap_numbers=_outlier_lap_numbers(laps, times),
             ),
         )

@@ -11,7 +11,7 @@ export function StatsTab({ stats }: StatsTabProps) {
     return <p className="state">No timed laps in this session.</p>
   }
 
-  const sorted = [...stats].sort((a, b) => a.best_lap_time - b.best_lap_time)
+  const sorted = [...stats].sort((a, b) => a.fastest_lap_time - b.fastest_lap_time)
 
   return (
     <div className="table-wrap">
@@ -21,7 +21,7 @@ export function StatsTab({ stats }: StatsTabProps) {
             <th>#</th>
             <th>Driver</th>
             <th>Laps</th>
-            <th>Best</th>
+            <th>Fastest lap</th>
             <th>Mean</th>
             <th>Median</th>
             <th>Worst</th>
@@ -35,7 +35,7 @@ export function StatsTab({ stats }: StatsTabProps) {
               <td className="num">{row.number}</td>
               <td>{row.driver_name}</td>
               <td className="num">{row.lap_count}</td>
-              <td className="num accent">{formatLapTime(row.best_lap_time)}</td>
+              <td className="num accent">{formatLapTime(row.fastest_lap_time)}</td>
               <td className="num">{formatLapTime(row.mean_lap_time)}</td>
               <td className="num">{formatLapTime(row.median_lap_time)}</td>
               <td className="num">{formatLapTime(row.worst_lap_time)}</td>

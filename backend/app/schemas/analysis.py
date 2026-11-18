@@ -35,8 +35,8 @@ class LeaderboardEntry(PydanticSchema):
     race_class: str | None = None
     lap_count: int
     # Official best lap, from the $H classification record.
-    best_lap_time: float | None = None
-    best_lap_number: int | None = None
+    official_best_lap_time: float | None = None
+    official_best_lap_number: int | None = None
     # Race finish details, from the $G classification record.
     laps_completed: int | None = None
     total_time_seconds: float | None = None
@@ -69,7 +69,7 @@ class DriverProgression(PydanticSchema):
     number: str
     driver_name: str
     race_class: str | None = None
-    best_lap_time: float | None = None
+    fastest_lap_time: float | None = None
     laps: list[ProgressionLap] = Field(default_factory=list)
 
 
@@ -80,7 +80,7 @@ class ComparisonDriver(PydanticSchema):
     number: str
     driver_name: str
     race_class: str | None = None
-    best_lap_time: float | None = None
+    fastest_lap_time: float | None = None
 
 
 class ComparisonRow(PydanticSchema):
@@ -105,7 +105,7 @@ class DriverStats(PydanticSchema):
     driver_name: str
     race_class: str | None = None
     lap_count: int
-    best_lap_time: float
+    fastest_lap_time: float
     worst_lap_time: float
     mean_lap_time: float
     median_lap_time: float
