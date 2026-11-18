@@ -60,6 +60,24 @@ def test_upload_rejects_oversized_file(client: TestClient, monkeypatch):
     assert _upload(client).status_code == status.HTTP_413_CONTENT_TOO_LARGE
 
 
+def test_upload_rejects_oversized_multi_chunk_file(client: TestClient, monkeypatch):
+    monkeypatch.setattr(settings, "max_upload_mb", 1)
+    body = b"x" * (2 * 1024 * 1024 + 1)
+    response = client.post(
+        "/api/sessions/upload",
+        files={"file": ("big.log", body, "text/plain")},
+    )
+    assert response.status_code == status.HTTP_413_CONTENT_TOO_LARGE
+
+
+def test_upload_garbage_bytes_is_not_a_server_error(client: TestClient):
+    response = client.post(
+        "/api/sessions/upload",
+        files={"file": ("bad.log", bytes([0xFF, 0xFE, 0x00, 0x80, 0xC3, 0x28]), "text/plain")},
+    )
+    assert response.status_code < status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 def test_session_detail_lists_drivers_and_state(client: TestClient):
     session_id = _upload(client).json()["session_id"]
     detail = client.get(f"/api/sessions/{session_id}").json()

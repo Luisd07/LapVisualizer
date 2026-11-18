@@ -25,6 +25,23 @@ from backend.app.services import ingest
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
 _BYTES_PER_MB = 1024 * 1024
+_CHUNK_SIZE = _BYTES_PER_MB
+
+
+def _read_limited(file: UploadFile) -> bytes:
+    """Read the upload in chunks, rejecting it as soon as it exceeds the size limit."""
+    limit = settings.max_upload_mb * _BYTES_PER_MB
+    chunks: list[bytes] = []
+    total = 0
+    while chunk := file.file.read(_CHUNK_SIZE):
+        total += len(chunk)
+        if total > limit:
+            raise HTTPException(
+                status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+                detail=f"File exceeds the {settings.max_upload_mb} MB limit.",
+            )
+        chunks.append(chunk)
+    return b"".join(chunks)
 
 
 @router.post(
@@ -32,21 +49,16 @@ _BYTES_PER_MB = 1024 * 1024
     response_model=SessionUploadResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def upload_session(
+def upload_session(
     db: DbSession,
     file: Annotated[UploadFile, File(description="An RMonitor timing log.")],
 ) -> SessionUploadResponse:
     """Parse an uploaded RMonitor log and store its session, drivers, and laps."""
-    raw = await file.read()
+    raw = _read_limited(file)
     if not raw:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Uploaded file is empty.",
-        )
-    if len(raw) > settings.max_upload_mb * _BYTES_PER_MB:
-        raise HTTPException(
-            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
-            detail=f"File exceeds the {settings.max_upload_mb} MB limit.",
         )
     logger.info("Received upload {!r} ({} bytes)", file.filename, len(raw))
     try:
