@@ -1,0 +1,1553 @@
+{
+  "components": {
+    "schemas": {
+      "Body_upload_session_api_sessions_upload_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "description": "An RMonitor timing log.",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_session_api_sessions_upload_post",
+        "type": "object"
+      },
+      "ComparisonDriver": {
+        "description": "Identifying metadata for a driver included in a comparison.",
+        "properties": {
+          "driver_name": {
+            "title": "Driver Name",
+            "type": "string"
+          },
+          "fastest_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fastest Lap Time"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "race_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Class"
+          },
+          "reg_number": {
+            "title": "Reg Number",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reg_number",
+          "number",
+          "driver_name"
+        ],
+        "title": "ComparisonDriver",
+        "type": "object"
+      },
+      "ComparisonResult": {
+        "description": "Side-by-side lap times for a set of selected drivers.",
+        "properties": {
+          "drivers": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonDriver"
+            },
+            "title": "Drivers",
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "title": "ComparisonResult",
+        "type": "object"
+      },
+      "ComparisonRow": {
+        "description": "Lap times for every compared driver at a single lap number.",
+        "properties": {
+          "lap_number": {
+            "title": "Lap Number",
+            "type": "integer"
+          },
+          "times": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Times",
+            "type": "object"
+          }
+        },
+        "required": [
+          "lap_number"
+        ],
+        "title": "ComparisonRow",
+        "type": "object"
+      },
+      "DriverDetail": {
+        "description": "Full driver detail \u2014 used in the driver analysis view.",
+        "properties": {
+          "avg_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Lap Time"
+          },
+          "best_lap_position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Lap Position"
+          },
+          "chassis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chassis"
+          },
+          "fastest_lap_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fastest Lap Number"
+          },
+          "fastest_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fastest Lap Time"
+          },
+          "finish_position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finish Position"
+          },
+          "first_name": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "lap_count": {
+            "title": "Lap Count",
+            "type": "integer"
+          },
+          "laps": {
+            "items": {
+              "$ref": "#/components/schemas/LapSchema"
+            },
+            "title": "Laps",
+            "type": "array"
+          },
+          "laps_completed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Laps Completed"
+          },
+          "last_name": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "official_best_lap_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Best Lap Number"
+          },
+          "official_best_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Best Lap Time"
+          },
+          "race_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Class"
+          },
+          "reg_number": {
+            "title": "Reg Number",
+            "type": "string"
+          },
+          "team": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team"
+          },
+          "total_time_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Time Seconds"
+          }
+        },
+        "required": [
+          "reg_number",
+          "first_name",
+          "last_name",
+          "number",
+          "lap_count"
+        ],
+        "title": "DriverDetail",
+        "type": "object"
+      },
+      "DriverProgression": {
+        "description": "A driver's laps in order \u2014 the data behind a lap-time chart.",
+        "properties": {
+          "driver_name": {
+            "title": "Driver Name",
+            "type": "string"
+          },
+          "fastest_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fastest Lap Time"
+          },
+          "laps": {
+            "items": {
+              "$ref": "#/components/schemas/ProgressionLap"
+            },
+            "title": "Laps",
+            "type": "array"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "race_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Class"
+          },
+          "reg_number": {
+            "title": "Reg Number",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reg_number",
+          "number",
+          "driver_name"
+        ],
+        "title": "DriverProgression",
+        "type": "object"
+      },
+      "DriverStats": {
+        "description": "Aggregate lap statistics for a single driver.",
+        "properties": {
+          "driver_name": {
+            "title": "Driver Name",
+            "type": "string"
+          },
+          "fastest_lap_time": {
+            "title": "Fastest Lap Time",
+            "type": "number"
+          },
+          "lap_count": {
+            "title": "Lap Count",
+            "type": "integer"
+          },
+          "mean_lap_time": {
+            "title": "Mean Lap Time",
+            "type": "number"
+          },
+          "median_lap_time": {
+            "title": "Median Lap Time",
+            "type": "number"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlier_lap_numbers": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Outlier Lap Numbers",
+            "type": "array"
+          },
+          "race_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Class"
+          },
+          "reg_number": {
+            "title": "Reg Number",
+            "type": "string"
+          },
+          "std_dev_seconds": {
+            "title": "Std Dev Seconds",
+            "type": "number"
+          },
+          "worst_lap_time": {
+            "title": "Worst Lap Time",
+            "type": "number"
+          }
+        },
+        "required": [
+          "reg_number",
+          "number",
+          "driver_name",
+          "lap_count",
+          "fastest_lap_time",
+          "worst_lap_time",
+          "mean_lap_time",
+          "median_lap_time",
+          "std_dev_seconds"
+        ],
+        "title": "DriverStats",
+        "type": "object"
+      },
+      "DriverSummary": {
+        "description": "Lightweight driver record \u2014 used in the session overview list.",
+        "properties": {
+          "chassis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chassis"
+          },
+          "fastest_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fastest Lap Time"
+          },
+          "finish_position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finish Position"
+          },
+          "first_name": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "lap_count": {
+            "title": "Lap Count",
+            "type": "integer"
+          },
+          "last_name": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "race_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Class"
+          },
+          "reg_number": {
+            "title": "Reg Number",
+            "type": "string"
+          },
+          "team": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team"
+          }
+        },
+        "required": [
+          "reg_number",
+          "first_name",
+          "last_name",
+          "number",
+          "lap_count"
+        ],
+        "title": "DriverSummary",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "LapSchema": {
+        "description": "A single completed lap (lap-level fields only).",
+        "properties": {
+          "lap_number": {
+            "title": "Lap Number",
+            "type": "integer"
+          },
+          "lap_time_seconds": {
+            "title": "Lap Time Seconds",
+            "type": "number"
+          },
+          "total_time_seconds": {
+            "title": "Total Time Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lap_number",
+          "lap_time_seconds",
+          "total_time_seconds"
+        ],
+        "title": "LapSchema",
+        "type": "object"
+      },
+      "Leaderboard": {
+        "description": "A session's full classification, ordered best-placed first.",
+        "properties": {
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/LeaderboardEntry"
+            },
+            "title": "Entries",
+            "type": "array"
+          },
+          "session_type": {
+            "$ref": "#/components/schemas/SessionType"
+          }
+        },
+        "required": [
+          "session_type"
+        ],
+        "title": "Leaderboard",
+        "type": "object"
+      },
+      "LeaderboardEntry": {
+        "description": "One row of a session leaderboard.\n\nThe leaderboard mirrors the timing system's own final classification \u2014\n``$G`` for a race, ``$H`` for a practice \u2014 so `position` is the official\nstanding, not a ranking re-derived from the lap log. Fields that only one\nsession type provides (e.g. `total_time_seconds`) are left unset otherwise.",
+        "properties": {
+          "driver_name": {
+            "title": "Driver Name",
+            "type": "string"
+          },
+          "gap_to_leader": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap To Leader"
+          },
+          "lap_count": {
+            "title": "Lap Count",
+            "type": "integer"
+          },
+          "laps_completed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Laps Completed"
+          },
+          "laps_down": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Laps Down"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "official_best_lap_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Best Lap Number"
+          },
+          "official_best_lap_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Best Lap Time"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "race_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Class"
+          },
+          "reg_number": {
+            "title": "Reg Number",
+            "type": "string"
+          },
+          "total_time_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Time Seconds"
+          }
+        },
+        "required": [
+          "position",
+          "reg_number",
+          "number",
+          "driver_name",
+          "lap_count"
+        ],
+        "title": "LeaderboardEntry",
+        "type": "object"
+      },
+      "ProgressionLap": {
+        "description": "A single lap within a driver's progression, with derived deltas.",
+        "properties": {
+          "gap_to_personal_best": {
+            "title": "Gap To Personal Best",
+            "type": "number"
+          },
+          "is_personal_best": {
+            "title": "Is Personal Best",
+            "type": "boolean"
+          },
+          "lap_number": {
+            "title": "Lap Number",
+            "type": "integer"
+          },
+          "lap_time_seconds": {
+            "title": "Lap Time Seconds",
+            "type": "number"
+          },
+          "total_time_seconds": {
+            "title": "Total Time Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lap_number",
+          "lap_time_seconds",
+          "total_time_seconds",
+          "gap_to_personal_best",
+          "is_personal_best"
+        ],
+        "title": "ProgressionLap",
+        "type": "object"
+      },
+      "SessionDetail": {
+        "description": "Full session detail \u2014 used in the dashboard view.",
+        "properties": {
+          "driver_count": {
+            "title": "Driver Count",
+            "type": "integer"
+          },
+          "drivers": {
+            "items": {
+              "$ref": "#/components/schemas/DriverSummary"
+            },
+            "title": "Drivers",
+            "type": "array"
+          },
+          "flag_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flag Status"
+          },
+          "race_time_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Race Time Seconds"
+          },
+          "run_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Number"
+          },
+          "session_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Date"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "session_name": {
+            "title": "Session Name",
+            "type": "string"
+          },
+          "time_of_day": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Of Day"
+          },
+          "total_laps": {
+            "title": "Total Laps",
+            "type": "integer"
+          },
+          "track_length": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track Length"
+          },
+          "track_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track Name"
+          },
+          "uploaded_at": {
+            "format": "date-time",
+            "title": "Uploaded At",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "session_id",
+          "session_name",
+          "total_laps",
+          "driver_count",
+          "uploaded_at"
+        ],
+        "title": "SessionDetail",
+        "type": "object"
+      },
+      "SessionSummary": {
+        "description": "Lightweight session record \u2014 used when listing saved sessions.",
+        "properties": {
+          "driver_count": {
+            "title": "Driver Count",
+            "type": "integer"
+          },
+          "run_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Number"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "session_name": {
+            "title": "Session Name",
+            "type": "string"
+          },
+          "total_laps": {
+            "title": "Total Laps",
+            "type": "integer"
+          },
+          "track_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track Name"
+          },
+          "uploaded_at": {
+            "format": "date-time",
+            "title": "Uploaded At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "session_name",
+          "total_laps",
+          "driver_count",
+          "uploaded_at"
+        ],
+        "title": "SessionSummary",
+        "type": "object"
+      },
+      "SessionType": {
+        "description": "How a session's leaderboard is ranked.\n\nA race is ranked by finishing order (the timing system's ``$G``\nclassification); a practice or qualifying session is ranked by best lap\n(the ``$H`` classification).",
+        "enum": [
+          "race",
+          "practice"
+        ],
+        "title": "SessionType",
+        "type": "string"
+      },
+      "SessionUploadResponse": {
+        "description": "Returned immediately after a timing log is uploaded.",
+        "properties": {
+          "driver_count": {
+            "title": "Driver Count",
+            "type": "integer"
+          },
+          "duplicate": {
+            "default": false,
+            "title": "Duplicate",
+            "type": "boolean"
+          },
+          "run_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Number"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "session_name": {
+            "title": "Session Name",
+            "type": "string"
+          },
+          "total_laps": {
+            "title": "Total Laps",
+            "type": "integer"
+          },
+          "track_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track Name"
+          },
+          "uploaded_at": {
+            "format": "date-time",
+            "title": "Uploaded At",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "session_id",
+          "session_name",
+          "total_laps",
+          "driver_count",
+          "uploaded_at"
+        ],
+        "title": "SessionUploadResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "summary": "Parse RMonitor timing logs and analyse lap data.",
+    "title": "LapVisualizer",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/sessions": {
+      "get": {
+        "description": "List every stored session, newest upload first.",
+        "operationId": "list_sessions_api_sessions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SessionSummary"
+                  },
+                  "title": "Response List Sessions Api Sessions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Sessions",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/upload": {
+      "post": {
+        "description": "Parse an uploaded RMonitor log and store its session, drivers, and laps.",
+        "operationId": "upload_session_api_sessions_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_session_api_sessions_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionUploadResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Upload Session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}": {
+      "delete": {
+        "description": "Delete a session along with all of its drivers and laps.",
+        "operationId": "delete_session_api_sessions__session_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Session",
+        "tags": [
+          "sessions"
+        ]
+      },
+      "get": {
+        "description": "Return one session with its driver summaries.",
+        "operationId": "get_session_api_sessions__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Session",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/comparison": {
+      "get": {
+        "description": "Align the lap times of two or more drivers for head-to-head charts.",
+        "operationId": "comparison_api_sessions__session_id__comparison_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "drivers",
+            "required": true,
+            "schema": {
+              "title": "Drivers",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparisonResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Comparison",
+        "tags": [
+          "analysis"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/drivers": {
+      "get": {
+        "description": "List every driver entered in a session.",
+        "operationId": "list_drivers_api_sessions__session_id__drivers_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DriverSummary"
+                  },
+                  "title": "Response List Drivers Api Sessions  Session Id  Drivers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Drivers",
+        "tags": [
+          "drivers"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/drivers/{reg_number}": {
+      "get": {
+        "description": "Return one driver with their full lap list and summary metrics.",
+        "operationId": "get_driver_api_sessions__session_id__drivers__reg_number__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "reg_number",
+            "required": true,
+            "schema": {
+              "title": "Reg Number",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Driver",
+        "tags": [
+          "drivers"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/leaderboard": {
+      "get": {
+        "description": "Return the session's official classification, optionally filtered to one class.\n\nRace sessions are ordered by finishing position, practice and qualifying\nsessions by best lap \u2014 see `analysis.build_leaderboard`.",
+        "operationId": "leaderboard_api_sessions__session_id__leaderboard_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "race_class",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Race Class"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Leaderboard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Leaderboard",
+        "tags": [
+          "analysis"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/progression": {
+      "get": {
+        "description": "Return lap-by-lap progressions for the selected drivers.",
+        "operationId": "progression_api_sessions__session_id__progression_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "drivers",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Drivers"
+            }
+          },
+          {
+            "in": "query",
+            "name": "race_class",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Race Class"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DriverProgression"
+                  },
+                  "title": "Response Progression Api Sessions  Session Id  Progression Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Progression",
+        "tags": [
+          "analysis"
+        ]
+      }
+    },
+    "/api/sessions/{session_id}/stats": {
+      "get": {
+        "description": "Return per-driver lap statistics, including likely-traffic outliers.",
+        "operationId": "stats_api_sessions__session_id__stats_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "drivers",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Drivers"
+            }
+          },
+          {
+            "in": "query",
+            "name": "race_class",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Race Class"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DriverStats"
+                  },
+                  "title": "Response Stats Api Sessions  Session Id  Stats Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stats",
+        "tags": [
+          "analysis"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Report service liveness, including database connectivity.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "meta"
+        ]
+      }
+    }
+  }
+}
