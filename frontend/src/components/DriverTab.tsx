@@ -8,6 +8,7 @@ import { computeDriverView } from '../lib/driverStats'
 import { computeLapPositions } from '../lib/positions'
 import { LapChart } from './LapChart'
 import { PositionChart } from './PositionChart'
+import { DriverSelect } from './driver/DriverSelect'
 import { LapTable } from './driver/LapTable'
 import { StatGrid } from './driver/StatGrid'
 
@@ -47,22 +48,7 @@ export function DriverTab({ progression, stats, leaderboard }: DriverTabProps) {
 
   return (
     <div className="driver-view">
-      <div className="driver-toolbar">
-        <label className="field-label" htmlFor="driver-pick">
-          Follow driver
-        </label>
-        <select
-          id="driver-pick"
-          value={reg}
-          onChange={(event) => setReg(event.target.value)}
-        >
-          {drivers.map((d) => (
-            <option key={d.reg_number} value={d.reg_number}>
-              #{d.number} {d.driver_name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <DriverSelect drivers={drivers} value={reg} onChange={setReg} />
 
       <StatGrid stats={view.stats} />
 

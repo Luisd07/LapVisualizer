@@ -10,6 +10,7 @@ type LapTableProps = {
 
 /** Every lap for one driver, with running position and Best/Outlier tags. */
 export function LapTable({ laps, outliers, positionByLap, deltaByLap }: LapTableProps) {
+  // One <tr> per lap; `key` (the lap number) is how React tracks each row.
   return (
     <div className="table-wrap">
       <table className="data-table">
@@ -39,6 +40,7 @@ export function LapTable({ laps, outliers, positionByLap, deltaByLap }: LapTable
               <td className="num">{formatGap(lap.gap_to_personal_best)}</td>
               <td className="num">{formatDuration(lap.total_time_seconds)}</td>
               <td>
+                {/* Conditional rendering: `cond && <jsx/>` shows the tag only when true. */}
                 {lap.is_personal_best && <span className="tag tag-best">Best</span>}
                 {outliers.has(lap.lap_number) && (
                   <span className="tag tag-out">Outlier</span>
