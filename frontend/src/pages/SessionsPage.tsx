@@ -9,6 +9,7 @@ export function SessionsPage() {
   const [sessions, setSessions] = useState<SessionSummary[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // useEffect with an empty dependency array `[]` runs once, just after the
   // component first mounts — the place to kick off data loading.
@@ -20,7 +21,14 @@ export function SessionsPage() {
   }, [])
 
   async function handleDelete(sessionId: string) {
-    await deleteSession(sessionId)
+    setDeleteError(null)
+    try {
+      await deleteSession(sessionId)
+    } catch (err) {
+      // Keep the card in place and tell the user why it is still there.
+      setDeleteError(err instanceof Error ? err.message : 'Failed to delete session')
+      return
+    }
     // Remove the deleted card from state so the grid re-renders without it.
     setSessions((current) => current.filter((s) => s.session_id !== sessionId))
   }
@@ -42,6 +50,12 @@ export function SessionsPage() {
           {sessions.length} stored {sessions.length === 1 ? 'session' : 'sessions'}
         </p>
       </div>
+
+      {deleteError && (
+        <p className="delete-error" role="alert">
+          Could not delete session: {deleteError}
+        </p>
+      )}
 
       {sessions.length === 0 ? (
         <p className="state">No sessions yet — upload a log to get started.</p>

@@ -29,6 +29,14 @@ npm run build
 
 Type-checks with `tsc -b` and produces a production bundle in `dist/`.
 
+## Test
+
+```bash
+npm test
+```
+
+Runs the Vitest + React Testing Library suite (`npm test -- --run` for a single pass).
+
 ## Lint
 
 ```bash
