@@ -1,6 +1,6 @@
 # LapVisualizer
 
-LapVisualizer turns RMonitor / AMB timing logs (`rmon.log`, written by Orbits race timing software) into interactive race analysis. Upload a log and it stores every driver's laps, then shows a leaderboard, lap-time charts and per-driver statistics in the browser. It is for racers, teams and timing nerds who have a raw log and want to see how a session actually went.
+LapVisualizer turns RMonitor / AMB timing logs (`rmon.log`, written by Orbits race timing software) into interactive race analysis. Upload a log and it stores every driver's laps, then shows a leaderboard, lap-time charts and per-driver statistics in the browser. It's meant for anyone holding a raw timing log who wants to see how a session went.
 
 ![CI](https://github.com/Luisd07/LapVisualizer/actions/workflows/ci.yml/badge.svg)
 
@@ -58,7 +58,9 @@ docker compose up --build
 
 Open http://localhost:8080 and upload [`sample_data/practice_session.log`](./sample_data/practice_session.log). The API is also exposed directly at http://localhost:8000 (interactive docs at `/docs`).
 
-`.env` is git-ignored and is the only place credentials live; the app refuses to start without it. If port 5432 is already taken on your machine, set `POSTGRES_HOST_PORT` in `.env` to another value. The `server` container waits for PostgreSQL to be healthy, runs `alembic upgrade head`, then starts the API.
+`.env` is git-ignored and is the only place credentials live. The database settings have no defaults in code, so the app won't start until they're set. If port 5432 is already taken on your machine, set `POSTGRES_HOST_PORT` in `.env` to another value.
+
+On startup the `server` container waits for PostgreSQL to be healthy, runs `alembic upgrade head`, then starts the API.
 
 ## Local development
 
@@ -94,7 +96,7 @@ All configuration is read from environment variables or `.env`: database credent
 
 ### Database migrations
 
-The schema is owned by [Alembic](https://alembic.sqlalchemy.org/); the app does **not** create tables on startup.
+[Alembic](https://alembic.sqlalchemy.org/) owns the schema. The app doesn't create tables on startup.
 
 ```sh
 uv run alembic upgrade head                       # apply all migrations
@@ -136,7 +138,7 @@ npm test                    # Vitest + React Testing Library
 npm run lint                # ESLint
 ```
 
-Ruff is configured in [`ruff.toml`](./ruff.toml) with the full rule set enabled. GitHub Actions ([`ci.yml`](./.github/workflows/ci.yml)) runs all of the above on every push and pull request to `main`. It also applies migrations to a fresh database, runs `alembic check`, builds the frontend, and fails if the generated API types are out of date.
+Ruff is configured in [`ruff.toml`](./ruff.toml) with the full rule set enabled. On every push and pull request to `main`, GitHub Actions ([`ci.yml`](./.github/workflows/ci.yml)) runs the same checks, with `ruff format --check` in place of the formatter. CI also migrates a fresh database and runs `alembic check`, builds the frontend, and fails if the generated API types are out of date.
 
 ## Project layout
 
