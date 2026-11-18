@@ -1,6 +1,7 @@
-# LapVisualizer — application server plus its PostgreSQL database.
+# LapVisualizer — PostgreSQL database, API server and the nginx-served web UI.
 # Credentials are interpolated from the git-ignored `.env` file; nothing
 # sensitive is hardcoded here. Start everything with: docker compose up --build
+# (web UI at http://localhost:8080, API at http://localhost:8000).
 services:
   db:
     image: postgres:17-alpine
@@ -34,6 +35,15 @@ services:
         condition: service_healthy
     ports:
       - 8000:8000
+
+  web:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - 8080:80
 
 volumes:
   db-data:
