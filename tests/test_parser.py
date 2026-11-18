@@ -7,7 +7,7 @@ import pytest
 from backend.app.services.parser import parse_clock, parse_log
 from tests.data import SAMPLE_LOG
 
-_REAL_SAMPLE = Path("sample_data/practice_session.log")
+_REAL_SAMPLE = Path(__file__).resolve().parent.parent / "sample_data" / "practice_session.log"
 
 # A minimal log whose $I init record clears crossings recorded before it.
 _RESET_LOG = """\
@@ -19,6 +19,17 @@ $J,"5","00:00:40.000","00:01:40.000"
 $I,"10:00:00.000","18 may 26"
 $J,"5","00:00:00.000","00:02:00.000"
 $J,"5","00:00:42.000","00:02:42.000"
+"""
+
+# Driver 7's second lap time is garbage; its third and fourth laps must keep their numbers.
+_BAD_LAP_LOG = """$B,1,"Bad Lap Test"
+$A,"7","7",1,"Sam","Slow","K",1
+$COMP,"7","7",1,"Sam","Slow","K","T"
+$J,"7","00:00:00.000","00:01:00.000"
+$J,"7","00:00:40.000","00:01:40.000"
+$J,"7","garbage","00:02:20.000"
+$J,"7","00:00:41.000","00:03:01.000"
+$J,"7","00:00:42.000","00:03:43.000"
 """
 
 
@@ -71,6 +82,23 @@ def test_parse_log_derives_timed_laps():
     assert min(lap.lap_time_seconds for lap in alice.laps) == pytest.approx(44.0)
 
 
+def test_parse_log_skips_unparseable_lap_time_and_keeps_passing_order():
+    session = parse_log(_BAD_LAP_LOG)
+    driver = session.drivers[0]
+    # Lap 2 is absent; laps 3 and 4 keep their passing-order numbers (a gap, no renumber).
+    assert [lap.lap_number for lap in driver.laps] == [1, 3, 4]
+    assert driver.laps[1].lap_time_seconds == pytest.approx(41.0)
+    assert len(session.warnings) == 1
+    assert "registration 7" in session.warnings[0]
+    assert "line 6" in session.warnings[0]
+
+
+def test_parse_log_first_crossing_is_skipped_without_warning():
+    session = parse_log(_RESET_LOG)
+    assert session.warnings == []
+    assert [lap.lap_number for lap in session.drivers[0].laps] == [1]
+
+
 def test_parse_log_resolves_driver_standings():
     session = parse_log(SAMPLE_LOG.decode())
     alice = next(d for d in session.drivers if d.reg_number == "11")
@@ -95,7 +123,7 @@ def test_parse_log_init_record_clears_scoreboard():
 
 def test_parse_log_handles_the_real_sample():
     if not _REAL_SAMPLE.exists():
-        return
+        pytest.skip(f"real sample log not found at {_REAL_SAMPLE}")
     session = parse_log(_REAL_SAMPLE.read_text(encoding="utf-8", errors="replace"))
     assert session.track_name == "Las Vegas Motorspeedway"
     assert len(session.drivers) == 48

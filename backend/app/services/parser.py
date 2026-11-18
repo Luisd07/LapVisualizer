@@ -182,7 +182,8 @@ class RMonitorParser:
         self._race_time: float | None = None
         self._time_of_day: str | None = None
         self._session_date: str | None = None
-        self._passings: dict[str, list[tuple[float, float]]] = {}
+        self._passings: dict[str, list[tuple[float | None, float]]] = {}
+        self._lineno = 0
         self._race_info: dict[str, _RaceInfo] = {}
         self._practice_info: dict[str, _PracticeInfo] = {}
         self._warnings: list[str] = []
@@ -226,6 +227,7 @@ class RMonitorParser:
     def _dispatch(self, fields: list[str], lineno: int) -> None:
         """Route one record to its handler after validating its field count."""
         command = fields[0]
+        self._lineno = lineno
         handler = self._handlers.get(command)
         if handler is None:
             self._warn(lineno, f"unknown record type {command!r}")
@@ -323,7 +325,11 @@ class RMonitorParser:
     def _handle_passing(self, fields: list[str]) -> None:
         """Handle `$J` — one timing-loop crossing for a competitor."""
         reg_number = fields[1]
-        lap_time = parse_clock(fields[2]) or 0.0
+        lap_time = parse_clock(fields[2])
+        if lap_time is None:
+            self._warn(
+                self._lineno, f"unparseable lap time {fields[2]!r} for registration {reg_number}"
+            )
         total_time = parse_clock(fields[3]) or 0.0
         self._passings.setdefault(reg_number, []).append((lap_time, total_time))
 
@@ -349,11 +355,12 @@ class RMonitorParser:
     def _build_driver(self, reg_number: str, comp: _Competitor) -> ParsedDriver:
         """Resolve one competitor's laps and standings into a `ParsedDriver`."""
         laps: list[ParsedLap] = []
-        for lap_time, total_time in self._passings.get(reg_number, []):
-            # The first crossing has no measured lap time; skip it.
-            if lap_time <= 0.0:
+        for index, (lap_time, total_time) in enumerate(self._passings.get(reg_number, [])):
+            # The first crossing has no measured lap time; skip it. An unparseable
+            # time (None, already warned) is skipped too, leaving a gap in the numbers.
+            if lap_time is None or lap_time <= 0.0:
                 continue
-            laps.append(ParsedLap(len(laps) + 1, lap_time, total_time))
+            laps.append(ParsedLap(index, lap_time, total_time))
         race = self._race_info.get(reg_number)
         practice = self._practice_info.get(reg_number)
         race_class = self._classes.get(comp.class_number) if comp.class_number is not None else None
