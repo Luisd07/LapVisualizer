@@ -231,11 +231,11 @@ export interface components {
             /** Driver Name */
             driver_name: string;
             /** Fastest Lap Time */
-            fastest_lap_time?: number | null;
+            fastest_lap_time: number | null;
             /** Number */
             number: string;
             /** Race Class */
-            race_class?: string | null;
+            race_class: string | null;
             /** Reg Number */
             reg_number: string;
         };
@@ -245,9 +245,9 @@ export interface components {
          */
         ComparisonResult: {
             /** Drivers */
-            drivers?: components["schemas"]["ComparisonDriver"][];
+            drivers: components["schemas"]["ComparisonDriver"][];
             /** Rows */
-            rows?: components["schemas"]["ComparisonRow"][];
+            rows: components["schemas"]["ComparisonRow"][];
         };
         /**
          * ComparisonRow
@@ -257,7 +257,7 @@ export interface components {
             /** Lap Number */
             lap_number: number;
             /** Times */
-            times?: {
+            times: {
                 [key: string]: number | null;
             };
         };
@@ -267,41 +267,41 @@ export interface components {
          */
         DriverDetail: {
             /** Avg Lap Time */
-            avg_lap_time?: number | null;
+            avg_lap_time: number | null;
             /** Best Lap Position */
-            best_lap_position?: number | null;
+            best_lap_position: number | null;
             /** Chassis */
-            chassis?: string | null;
+            chassis: string | null;
             /** Fastest Lap Number */
-            fastest_lap_number?: number | null;
+            fastest_lap_number: number | null;
             /** Fastest Lap Time */
-            fastest_lap_time?: number | null;
+            fastest_lap_time: number | null;
             /** Finish Position */
-            finish_position?: number | null;
+            finish_position: number | null;
             /** First Name */
             first_name: string;
             /** Lap Count */
             lap_count: number;
             /** Laps */
-            laps?: components["schemas"]["LapSchema"][];
+            laps: components["schemas"]["LapSchema"][];
             /** Laps Completed */
-            laps_completed?: number | null;
+            laps_completed: number | null;
             /** Last Name */
             last_name: string;
             /** Number */
             number: string;
             /** Official Best Lap Number */
-            official_best_lap_number?: number | null;
+            official_best_lap_number: number | null;
             /** Official Best Lap Time */
-            official_best_lap_time?: number | null;
+            official_best_lap_time: number | null;
             /** Race Class */
-            race_class?: string | null;
+            race_class: string | null;
             /** Reg Number */
             reg_number: string;
             /** Team */
-            team?: string | null;
+            team: string | null;
             /** Total Time Seconds */
-            total_time_seconds?: number | null;
+            total_time_seconds: number | null;
         };
         /**
          * DriverProgression
@@ -311,13 +311,13 @@ export interface components {
             /** Driver Name */
             driver_name: string;
             /** Fastest Lap Time */
-            fastest_lap_time?: number | null;
+            fastest_lap_time: number | null;
             /** Laps */
-            laps?: components["schemas"]["ProgressionLap"][];
+            laps: components["schemas"]["ProgressionLap"][];
             /** Number */
             number: string;
             /** Race Class */
-            race_class?: string | null;
+            race_class: string | null;
             /** Reg Number */
             reg_number: string;
         };
@@ -339,9 +339,9 @@ export interface components {
             /** Number */
             number: string;
             /** Outlier Lap Numbers */
-            outlier_lap_numbers?: number[];
+            outlier_lap_numbers: number[];
             /** Race Class */
-            race_class?: string | null;
+            race_class: string | null;
             /** Reg Number */
             reg_number: string;
             /** Std Dev Seconds */
@@ -355,11 +355,11 @@ export interface components {
          */
         DriverSummary: {
             /** Chassis */
-            chassis?: string | null;
+            chassis: string | null;
             /** Fastest Lap Time */
-            fastest_lap_time?: number | null;
+            fastest_lap_time: number | null;
             /** Finish Position */
-            finish_position?: number | null;
+            finish_position: number | null;
             /** First Name */
             first_name: string;
             /** Lap Count */
@@ -369,11 +369,11 @@ export interface components {
             /** Number */
             number: string;
             /** Race Class */
-            race_class?: string | null;
+            race_class: string | null;
             /** Reg Number */
             reg_number: string;
             /** Team */
-            team?: string | null;
+            team: string | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -398,7 +398,7 @@ export interface components {
          */
         Leaderboard: {
             /** Entries */
-            entries?: components["schemas"]["LeaderboardEntry"][];
+            entries: components["schemas"]["LeaderboardEntry"][];
             session_type: components["schemas"]["SessionType"];
         };
         /**
@@ -414,27 +414,27 @@ export interface components {
             /** Driver Name */
             driver_name: string;
             /** Gap To Leader */
-            gap_to_leader?: number | null;
+            gap_to_leader: number | null;
             /** Lap Count */
             lap_count: number;
             /** Laps Completed */
-            laps_completed?: number | null;
+            laps_completed: number | null;
             /** Laps Down */
-            laps_down?: number | null;
+            laps_down: number | null;
             /** Number */
             number: string;
             /** Official Best Lap Number */
-            official_best_lap_number?: number | null;
+            official_best_lap_number: number | null;
             /** Official Best Lap Time */
-            official_best_lap_time?: number | null;
+            official_best_lap_time: number | null;
             /** Position */
             position: number;
             /** Race Class */
-            race_class?: string | null;
+            race_class: string | null;
             /** Reg Number */
             reg_number: string;
             /** Total Time Seconds */
-            total_time_seconds?: number | null;
+            total_time_seconds: number | null;
         };
         /**
          * ProgressionLap
@@ -460,34 +460,34 @@ export interface components {
             /** Driver Count */
             driver_count: number;
             /** Drivers */
-            drivers?: components["schemas"]["DriverSummary"][];
+            drivers: components["schemas"]["DriverSummary"][];
             /** Flag Status */
-            flag_status?: string | null;
+            flag_status: string | null;
             /** Race Time Seconds */
-            race_time_seconds?: number | null;
+            race_time_seconds: number | null;
             /** Run Number */
-            run_number?: number | null;
+            run_number: number | null;
             /** Session Date */
-            session_date?: string | null;
+            session_date: string | null;
             /** Session Id */
             session_id: string;
             /** Session Name */
             session_name: string;
             /** Time Of Day */
-            time_of_day?: string | null;
+            time_of_day: string | null;
             /** Total Laps */
             total_laps: number;
             /** Track Length */
-            track_length?: number | null;
+            track_length: number | null;
             /** Track Name */
-            track_name?: string | null;
+            track_name: string | null;
             /**
              * Uploaded At
              * Format: date-time
              */
             uploaded_at: string;
             /** Warnings */
-            warnings?: string[];
+            warnings: string[];
         };
         /**
          * SessionSummary
@@ -497,7 +497,7 @@ export interface components {
             /** Driver Count */
             driver_count: number;
             /** Run Number */
-            run_number?: number | null;
+            run_number: number | null;
             /** Session Id */
             session_id: string;
             /** Session Name */
@@ -505,7 +505,7 @@ export interface components {
             /** Total Laps */
             total_laps: number;
             /** Track Name */
-            track_name?: string | null;
+            track_name: string | null;
             /**
              * Uploaded At
              * Format: date-time
@@ -535,7 +535,7 @@ export interface components {
              */
             duplicate: boolean;
             /** Run Number */
-            run_number?: number | null;
+            run_number: number | null;
             /** Session Id */
             session_id: string;
             /** Session Name */
@@ -543,14 +543,14 @@ export interface components {
             /** Total Laps */
             total_laps: number;
             /** Track Name */
-            track_name?: string | null;
+            track_name: string | null;
             /**
              * Uploaded At
              * Format: date-time
              */
             uploaded_at: string;
             /** Warnings */
-            warnings?: string[];
+            warnings: string[];
         };
         /** ValidationError */
         ValidationError: {

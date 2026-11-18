@@ -26,6 +26,7 @@ class PydanticSchema(BaseModel):
         from_attributes=True,
         str_strip_whitespace=True,
         ser_json_timedelta="iso8601",
+        json_schema_serialization_defaults_required=True,
     )
 
 

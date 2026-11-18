@@ -57,7 +57,9 @@
         "required": [
           "reg_number",
           "number",
-          "driver_name"
+          "driver_name",
+          "race_class",
+          "fastest_lap_time"
         ],
         "title": "ComparisonDriver",
         "type": "object"
@@ -80,6 +82,10 @@
             "type": "array"
           }
         },
+        "required": [
+          "drivers",
+          "rows"
+        ],
         "title": "ComparisonResult",
         "type": "object"
       },
@@ -106,7 +112,8 @@
           }
         },
         "required": [
-          "lap_number"
+          "lap_number",
+          "times"
         ],
         "title": "ComparisonRow",
         "type": "object"
@@ -279,7 +286,20 @@
           "first_name",
           "last_name",
           "number",
-          "lap_count"
+          "race_class",
+          "team",
+          "chassis",
+          "lap_count",
+          "fastest_lap_time",
+          "fastest_lap_number",
+          "avg_lap_time",
+          "finish_position",
+          "laps_completed",
+          "total_time_seconds",
+          "best_lap_position",
+          "official_best_lap_number",
+          "official_best_lap_time",
+          "laps"
         ],
         "title": "DriverDetail",
         "type": "object"
@@ -332,7 +352,10 @@
         "required": [
           "reg_number",
           "number",
-          "driver_name"
+          "driver_name",
+          "race_class",
+          "fastest_lap_time",
+          "laps"
         ],
         "title": "DriverProgression",
         "type": "object"
@@ -399,12 +422,14 @@
           "reg_number",
           "number",
           "driver_name",
+          "race_class",
           "lap_count",
           "fastest_lap_time",
           "worst_lap_time",
           "mean_lap_time",
           "median_lap_time",
-          "std_dev_seconds"
+          "std_dev_seconds",
+          "outlier_lap_numbers"
         ],
         "title": "DriverStats",
         "type": "object"
@@ -493,7 +518,12 @@
           "first_name",
           "last_name",
           "number",
-          "lap_count"
+          "race_class",
+          "team",
+          "chassis",
+          "lap_count",
+          "fastest_lap_time",
+          "finish_position"
         ],
         "title": "DriverSummary",
         "type": "object"
@@ -550,7 +580,8 @@
           }
         },
         "required": [
-          "session_type"
+          "session_type",
+          "entries"
         ],
         "title": "Leaderboard",
         "type": "object"
@@ -661,7 +692,14 @@
           "reg_number",
           "number",
           "driver_name",
-          "lap_count"
+          "race_class",
+          "lap_count",
+          "official_best_lap_time",
+          "official_best_lap_number",
+          "laps_completed",
+          "total_time_seconds",
+          "gap_to_leader",
+          "laps_down"
         ],
         "title": "LeaderboardEntry",
         "type": "object"
@@ -819,9 +857,18 @@
         "required": [
           "session_id",
           "session_name",
+          "run_number",
+          "track_name",
+          "track_length",
+          "flag_status",
+          "race_time_seconds",
+          "time_of_day",
+          "session_date",
           "total_laps",
           "driver_count",
-          "uploaded_at"
+          "uploaded_at",
+          "drivers",
+          "warnings"
         ],
         "title": "SessionDetail",
         "type": "object"
@@ -876,6 +923,8 @@
         "required": [
           "session_id",
           "session_name",
+          "run_number",
+          "track_name",
           "total_laps",
           "driver_count",
           "uploaded_at"
@@ -954,9 +1003,13 @@
         "required": [
           "session_id",
           "session_name",
+          "run_number",
+          "track_name",
           "total_laps",
           "driver_count",
-          "uploaded_at"
+          "uploaded_at",
+          "duplicate",
+          "warnings"
         ],
         "title": "SessionUploadResponse",
         "type": "object"
