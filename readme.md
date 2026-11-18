@@ -114,5 +114,3 @@ docker compose up --build
 
 The `server` container waits for PostgreSQL to be healthy, runs
 `alembic upgrade head`, and then starts the API on port 8000.
-
-See [README.Docker.md](./README.Docker.md) for details.
